@@ -21,9 +21,10 @@ logger = logging.getLogger(__name__)
 BOARD_MAP = {
     "openbci_cyton": BoardIds.CYTON_BOARD,
     "openbci_ganglion": BoardIds.GANGLION_BOARD,
-    "neurosky_mindwave": BoardIds.MINDWAVE_BOARD,
     "synthetic": BoardIds.SYNTHETIC_BOARD,
 }
+if hasattr(BoardIds, "MINDWAVE_BOARD"):
+    BOARD_MAP["neurosky_mindwave"] = BoardIds.MINDWAVE_BOARD
 
 
 class EEGAcquisition:
