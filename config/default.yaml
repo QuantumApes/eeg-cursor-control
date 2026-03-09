@@ -1,0 +1,72 @@
+# ============================================================
+# DIY EEG Cursor Control — Configuration
+# ============================================================
+
+# --- Hardware ---
+hardware:
+  # Supported: "openbci_cyton", "openbci_ganglion", "neurosky_mindwave", "synthetic"
+  board: "synthetic"
+  serial_port: "/dev/ttyUSB0"    # Linux default; macOS: /dev/cu.usbserial-*
+  sampling_rate: 250              # Hz (Cyton=250, Ganglion=200, NeuroSky=512)
+  channels: [1, 2, 3, 4]         # EEG channel indices to use
+
+# --- Signal Processing ---
+processing:
+  buffer_seconds: 1.0             # Sliding window size
+  overlap: 0.5                    # Window overlap ratio (0.0–1.0)
+  notch_freq: 60.0                # Power line noise (50 Hz EU, 60 Hz US)
+  bandpass:
+    low: 1.0                      # Hz
+    high: 50.0                    # Hz
+  artifact_rejection:
+    enabled: true
+    threshold_uv: 100.0           # Reject epochs with amplitude > this
+
+# --- Feature Extraction ---
+features:
+  # Frequency bands (Hz)
+  bands:
+    delta: [1, 4]
+    theta: [4, 8]
+    alpha: [8, 13]
+    beta: [13, 30]
+    gamma: [30, 50]
+  # Methods: "bandpower", "psd", "csp", "wavelet"
+  methods: ["bandpower", "psd"]
+
+# --- Classification ---
+classifier:
+  # "lda", "svm", "random_forest", "neural_net"
+  type: "lda"
+  # Mental states to decode
+  classes:
+    - "rest"        # Baseline / idle
+    - "focus"       # Cursor UP (beta activation)
+    - "relax"       # Cursor DOWN (alpha activation)
+    - "left_think"  # Cursor LEFT (lateralized mu suppression)
+    - "right_think" # Cursor RIGHT (lateralized mu suppression)
+  # Training
+  training:
+    epochs_per_class: 40
+    epoch_duration: 4.0           # seconds
+    rest_between: 2.0             # seconds
+    validation_split: 0.2
+    cross_validation_folds: 5
+
+# --- Cursor Control ---
+cursor:
+  mode: "continuous"              # "continuous" or "discrete"
+  speed: 10                       # Pixels per frame
+  smoothing: 0.3                  # Exponential smoothing factor (0=none, 1=max)
+  confidence_threshold: 0.6       # Min classifier confidence to move
+  screen_bounds:
+    width: 1920
+    height: 1080
+
+# --- Logging & Debug ---
+debug:
+  log_level: "INFO"
+  save_raw_eeg: true
+  save_features: true
+  live_plot: true                 # Real-time signal visualization
+  output_dir: "data/sessions"
