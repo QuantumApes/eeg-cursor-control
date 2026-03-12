@@ -4,7 +4,7 @@
 
 A real-time brain-computer interface (BCI) that decodes mental states from consumer EEG headsets and translates them into cursor movement. Think *up* → cursor goes up. Imagine squeezing your left hand → cursor goes left. All running locally, in real-time, at 30 Hz.
 
-https://github.com/YOUR_USERNAME/eeg-cursor-control/assets/demo.mp4
+https://github.com/QuantumApes/eeg-cursor-control/assets/demo.mp4
 
 ---
 
